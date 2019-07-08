@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 # matplotlib inline
 from sklearn import metrics
 
-heart = pd.read_csv("D:\heartdisease\heart.csv")
+heart = pd.read_csv("..\heartdisease\heart.csv")
 
 heart.shape
 
