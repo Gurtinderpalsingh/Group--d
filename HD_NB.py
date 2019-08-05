@@ -1,5 +1,5 @@
 from sklearn.naive_bayes import GaussianNB
-
+import seaborn as sns
 import tensorflow as tf
 from tensorflow import keras
 
@@ -19,7 +19,7 @@ from sklearn.metrics import accuracy_score
 
 from sklearn.metrics import confusion_matrix
 
-data = pd.read_csv("C:\PROJECT\heart-disease-uci\heart.csv")
+data = pd.read_csv("D:\heart.csv")
 
 
 
@@ -27,7 +27,7 @@ data = pd.read_csv("C:\PROJECT\heart-disease-uci\heart.csv")
 predictors = data.drop("target",axis=1)
 target = data["target"]
 
-X_train,X_test,Y_train,Y_test = train_test_split(predictors,target,test_size=0.30,random_state=100)
+X_train,X_test,Y_train,Y_test = train_test_split(predictors,target,test_size=0.30,random_state=0)
 print("Training features have {0} records and Testing features have {1} records.".\
       format(X_train.shape[0], X_test.shape[0]))
 
@@ -63,9 +63,9 @@ y_pred_nb = nb.predict(X_test)
 print(y_pred_nb)
 
 
-score_nb = round(accuracy_score(y_pred_nb,Y_test)*100,2)
+nb = accuracy_score(y_pred_nb,Y_test)
 
-print("The accuracy score achieved using Naive Bayes is: "+str(score_nb)+" %")
+print("The accuracy score achieved using Naive Bayes is: "+str(nb)+" %")
 
 model = train_model(X_train, Y_train, X_test, Y_test, GaussianNB)
 
@@ -104,3 +104,32 @@ plt.xlabel('No. of people Suffering')
 plt.ylabel('Frequency')
 plt.savefig('heartDiseaseAndAges.png')
 plt.show()
+
+def plotAge():
+    facet_grid = sns.FacetGrid(data, hue='target')
+    facet_grid.map(sns.kdeplot, "age", shade=True, ax=axes[0])
+    legend_labels = ['disease false', 'disease true']
+    for t, l in zip(axes[0].get_legend().texts, legend_labels):
+        t.set_text(l)
+        axes[0].set(xlabel='age', ylabel='density')
+
+    avg = data[["age", "target"]].groupby(['age'], as_index=False).mean()
+    sns.barplot(x='age', y='target', data=avg, ax=axes[1])
+    axes[1].set(xlabel='age', ylabel='disease probability')
+
+    plt.clf()
+    plt.show()
+
+
+fig_age, axes = plt.subplots(nrows=2, ncols=1, figsize=(15, 8))
+
+plotAge()
+
+
+
+file = open("D:\conclusion\hdnb.txt", "w")
+
+file.write(str(nb)) 
+file.close() 
+
+
